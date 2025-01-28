@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Threading;
 
 namespace FlexibleFramework.Extensions
 {
     /// <summary>
     /// Provides utility methods for manipulating DateTime values.
     /// </summary>
-
     public static class DateTimeExtensions
     {
         #region Methods to Check Time Components
@@ -14,31 +12,21 @@ namespace FlexibleFramework.Extensions
         /// <summary>
         /// Checks if the specified DateTime value has any non-zero time components (hours, minutes, seconds, or milliseconds).
         /// </summary>
-        /// <param name="d">
-        ///   The DateTime value to check.
-        /// </param>
-        /// <returns>
-        ///   A boolean indicating whether the DateTime value has a non-zero time component.
-        /// </returns>
-        public static bool HasTime(this DateTime d)
+        /// <param name="date">The DateTime value to check.</param>
+        /// <returns>A boolean indicating whether the DateTime value has a non-zero time component.</returns>
+        public static bool HasTime(this DateTime date)
         {
-            return d.Hour > 0 || d.Minute > 0 || d.Second > 0 || d.Millisecond > 0;
+            return date.TimeOfDay.Ticks > 0;
         }
 
         /// <summary>
         /// Checks if the specified DateTime value has any non-zero time components (hours, minutes, seconds, or milliseconds).
         /// </summary>
-        /// <param name="d">
-        ///   The DateTime value to check.
-        /// </param>
-        /// <returns>
-        ///   A boolean indicating whether the DateTime value has a non-zero time component.
-        /// </returns>
-        public static bool HasTime(this DateTime? d)
+        /// <param name="date">The nullable DateTime value to check.</param>
+        /// <returns>A boolean indicating whether the DateTime value has a non-zero time component.</returns>
+        public static bool HasTime(this DateTime? date)
         {
-            if (d == null)
-                return false;
-            return d.Value.HasTime();
+            return date?.HasTime() ?? false;
         }
 
         #endregion
@@ -46,35 +34,23 @@ namespace FlexibleFramework.Extensions
         #region Methods to Reset Time Components
 
         /// <summary>
-        /// Returns a new DateTime value representing the start of the specified date.
-        /// The time components (hours, minutes, seconds, milliseconds) are set to zero.
+        /// Returns a new DateTime value representing the start of the specified date (00:00:00.0000000).
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MinValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part preserved and time parts reset to zero.
-        /// </returns>
+        /// <param name="date">The original DateTime value.</param>
+        /// <returns>A new DateTime value with time components reset.</returns>
         public static DateTime BeginDay(this DateTime date)
         {
-            return new DateTime(date.Year, date.Month, date.Day, 0, 0, 0, date.Kind);
+            return date.Date;
         }
 
         /// <summary>
-        /// Returns a new DateTime value representing the start of the specified date.
-        /// The time components (hours, minutes, seconds, milliseconds) are set to zero.
+        /// Returns a new DateTime value representing the start of the specified date (00:00:00.0000000).
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MinValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part preserved and time parts reset to zero.
-        /// </returns>
+        /// <param name="date">The original nullable DateTime value.</param>
+        /// <returns>A new DateTime value with time components reset, or null if input is null.</returns>
         public static DateTime? BeginDay(this DateTime? date)
         {
-            if (date == null)
-                return null;
-            return date.Value.BeginDay();
+            return date?.Date;
         }
 
         #endregion
@@ -82,35 +58,23 @@ namespace FlexibleFramework.Extensions
         #region Methods to Set Time Components
 
         /// <summary>
-        /// Returns a new DateTime value representing the end of the specified date.
-        /// The time components are set to their maximum possible values (23:59:59.999).
+        /// Returns a new DateTime value representing the end of the specified date (23:59:59.9999999).
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MaxValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part preserved and time parts set to their maximum values.
-        /// </returns>
+        /// <param name="date">The original DateTime value.</param>
+        /// <returns>A new DateTime value with time set to end of day.</returns>
         public static DateTime EndDay(this DateTime date)
         {
-            return new DateTime(date.Year, date.Month, date.Day, 23, 59, 59, 999, date.Kind);
+            return date.Date.AddDays(1).AddTicks(-1);
         }
 
         /// <summary>
-        /// Returns a new DateTime value representing the end of the specified date.
-        /// The time components are set to their maximum possible values (23:59:59.999).
+        /// Returns a new DateTime value representing the end of the specified date (23:59:59.9999999).
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MaxValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part preserved and time parts set to their maximum values.
-        /// </returns>
+        /// <param name="date">The original nullable DateTime value.</param>
+        /// <returns>A new DateTime value with time set to end of day, or null if input is null.</returns>
         public static DateTime? EndDay(this DateTime? date)
         {
-            if (date == null) 
-                return null;
-            return date.Value.EndDay();
+            return date?.EndDay();
         }
 
         #endregion
@@ -119,36 +83,22 @@ namespace FlexibleFramework.Extensions
 
         /// <summary>
         /// Returns a new DateTime value representing the start of the specified month.
-        /// The date part is adjusted to the first day of the month, and time components are set to zero.
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MinValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part set to the first day of the month and time parts reset.
-        /// </returns>
+        /// <param name="date">The original DateTime value.</param>
+        /// <returns>A new DateTime value set to the first day of the month at 00:00:00.</returns>
         public static DateTime BeginMonth(this DateTime date)
         {
             return new DateTime(date.Year, date.Month, 1, 0, 0, 0, date.Kind);
         }
 
-
-
         /// <summary>
         /// Returns a new DateTime value representing the start of the specified month.
-        /// The date part is adjusted to the first day of the month, and time components are set to zero.
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MinValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part set to the first day of the month and time parts reset.
-        /// </returns>
+        /// <param name="date">The original nullable DateTime value.</param>
+        /// <returns>A new DateTime value set to the first day of the month, or null if input is null.</returns>
         public static DateTime? BeginMonth(this DateTime? date)
         {
-            if (date == null) 
-                return null;
-            return date.Value.BeginMonth();
+            return date?.BeginMonth();
         }
 
         #endregion
@@ -157,14 +107,9 @@ namespace FlexibleFramework.Extensions
 
         /// <summary>
         /// Returns a new DateTime value representing the start of the specified year.
-        /// The date part is adjusted to January 1st of the given year, and time components are set to zero.
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MinValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part set to January 1st of the specified year and time parts reset.
-        /// </returns>
+        /// <param name="date">The original DateTime value.</param>
+        /// <returns>A new DateTime value set to January 1st of the year at 00:00:00.</returns>
         public static DateTime BeginYear(this DateTime date)
         {
             return new DateTime(date.Year, 1, 1, 0, 0, 0, date.Kind);
@@ -172,19 +117,12 @@ namespace FlexibleFramework.Extensions
 
         /// <summary>
         /// Returns a new DateTime value representing the start of the specified year.
-        /// The date part is adjusted to January 1st of the given year, and time components are set to zero.
         /// </summary>
-        /// <param name="dt">
-        ///   The original DateTime value. If null, returns DateTime.MinValue.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value with the date part set to January 1st of the specified year and time parts reset.
-        /// </returns>
+        /// <param name="date">The original nullable DateTime value.</param>
+        /// <returns>A new DateTime value set to January 1st of the year, or null if input is null.</returns>
         public static DateTime? BeginYear(this DateTime? date)
         {
-            if (date == null) 
-                return null;
-            return date.Value.BeginYear();
+            return date?.BeginYear();
         }
 
         #endregion
@@ -192,14 +130,9 @@ namespace FlexibleFramework.Extensions
         #region Methods to Calculate Date Ranges
 
         /// <summary>
-        /// Returns a new DateTime value representing the start of the previous day.
+        /// Returns a DateTime value representing 00:00:00 of the previous day.
         /// </summary>
-        /// <param name="date">
-        ///   The DateTime value to calculate the previous day for.
-        /// </param>
-        /// <returns>
-        ///   A new DateTime value set to 00:00:00 of the preceding day.
-        /// </returns>
+        /// <param name="date">The DateTime value to calculate from.</param>
         public static DateTime Yesterday(this DateTime date)
         {
             return date.AddDays(-1).BeginDay();
@@ -209,24 +142,23 @@ namespace FlexibleFramework.Extensions
 
         #region Thread-Safe Timestamp Handling
 
-        private static long lastTimeStamp = DateTime.Now.Ticks;
+        private static long _lastTimestamp = DateTime.UtcNow.Ticks;
+        private static readonly object _timestampLock = new object();
 
         /// <summary>
-        /// A thread-safe way to get the current timestamp with high precision.
-        /// The value is updated in a thread-safe manner to avoid race conditions.
+        /// Gets a thread-safe timestamp with microsecond precision.
+        /// Note: May return duplicate values on systems with low-resolution clocks.
         /// </summary>
         public static long NowTicks
         {
             get
             {
-                long original, newValue;
-                do
+                lock (_timestampLock)
                 {
-                    original = lastTimeStamp;
-                    long now = DateTime.Now.Ticks;
-                    newValue = Math.Max(now, original + 1);
-                } while (Interlocked.CompareExchange(ref lastTimeStamp, newValue, original) != original);
-                return newValue;
+                    var current = DateTime.UtcNow.Ticks;
+                    _lastTimestamp = current > _lastTimestamp ? current : _lastTimestamp + 1;
+                    return _lastTimestamp;
+                }
             }
         }
 
@@ -235,18 +167,17 @@ namespace FlexibleFramework.Extensions
         #region Methods for Precise Time Handling
 
         /// <summary>
-        /// Returns a DateTime instance with the precise current timestamp.
+        /// Returns a DateTime instance with a thread-safe high-precision timestamp.
         /// </summary>
-        public static DateTime ExactNow(this DateTime _)
+        public static DateTime ExactNow()
         {
-            return new DateTime(NowTicks);
+            return new DateTime(NowTicks, DateTimeKind.Utc);
         }
 
         /// <summary>
-        /// Returns the current timestamp in terms of ticks.
-        /// This provides a more precise representation than DateTime.Now.Ticks.
+        /// Returns a thread-safe high-precision timestamp in ticks.
         /// </summary>
-        public static long ExactTicks(this DateTime _)
+        public static long ExactTicks()
         {
             return NowTicks;
         }
@@ -254,3 +185,4 @@ namespace FlexibleFramework.Extensions
         #endregion
     }
 }
+
